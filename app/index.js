@@ -1,17 +1,13 @@
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { useState } from 'react';
+import { Link, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, Pressable, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-import { useNavigation } from "@react-navigation/native"
 
-export default function App() {
-
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
-  const [error, setError] = useState();
+export default function Login() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const router = useNavigation();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -37,21 +33,22 @@ export default function App() {
         Alert.alert('Login successful')
 
         setTimeout(() => {
-          router.push('/home');
+          router.push('/(tabs)');
         }, 1000);
       }
     } catch (error) {
       setError(error);
       console.log('Error. Try again later', error.message);
-      Alert.alert(error)
+      Alert.alert(error.message)
     } finally {
       setLoading(false)
     }
   }
 
   const routeToHome = () => {
-    router.navigate('Home');
+    router.push('/(tabs)');
   }
+
   return (
     <ScrollView>
       <View style={styles.container} >
@@ -65,20 +62,16 @@ export default function App() {
 
           <View>
             <TextInput placeholder='Username' value={username} onChangeText={(text) => setUsername(text)} style={styles.input} />
-            <TextInput placeholder='Password' value={password} onChangeText={(text) => setPassword(text)} style={styles.input} />
+            <TextInput placeholder='Password' secureTextEntry={true} value={password} onChangeText={(text) => setPassword(text)} style={styles.input} />
 
             {/* Button */}
-            <Pressable style={styles.button} onPress={routeToHome}>
-
+            <Pressable style={styles.button} onPress={onSubmit}>
               <Text style={{color: '#fff'}}>{loading ? (
-
                 <View style={{flex: 1, flexDirection: 'row', gap: 4}}>
                   <Text style={{ color: '#fff' }}>Logging in...</Text>
                   <ActivityIndicator color="#fff" />
                 </View>
-
               ) : 'Login'}
-              
               </Text>
             </Pressable>
           </View>
@@ -92,36 +85,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 60,
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center'
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 18,
-    textAlign: 'center',
+    fontSize: 16,
+    color: '#666',
     marginBottom: 20,
-    color: '#000',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    borderRadius: 5,
     padding: 10,
-    margin: 10,
-    borderRadius: 5
+    marginBottom: 15,
   },
   button: {
-    // width: '100%',
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'purple',
-    padding: 10,
-    margin: 10,
+    backgroundColor: '#007BFF',
+    padding: 15,
     borderRadius: 5,
-    textAlign: 'center'
+    alignItems: 'center',
   }
 });
